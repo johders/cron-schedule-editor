@@ -31,37 +31,49 @@ function App() {
   const [text, setText] = useState("Nothing scheduled");
 
   return (
-    <div>
-      <RadioButton
-        label={weekly}
-        name="scheduling-option"
-        value={weekly}
-        checked={selectedSchedulingOption === "Weekly"}
-        onChange={setSelectedSchedulingOption}
-      />
+    <div class="container">
+      <div class="schedulingOption">
+        <RadioButton
+          label={weekly}
+          name="scheduling-option"
+          value={weekly}
+          checked={selectedSchedulingOption === "Weekly"}
+          onChange={setSelectedSchedulingOption}
+        />
 
-      <SelectBox options={days} value={selectedDay} onChange={setSelectedDay} />
+        <div className={"weeklyControls"}>
+          <SelectBox
+            options={days}
+            value={selectedDay}
+            onChange={setSelectedDay}
+          />
 
-      <TimePicker value={dateTime} onChange={setDateTime} />
+          <TimePicker value={dateTime} onChange={setDateTime} />
+        </div>
+      </div>
 
-      <RadioButton
-        label={daily}
-        name="scheduling-option"
-        value={daily}
-        checked={selectedSchedulingOption === "Daily"}
-        onChange={setSelectedSchedulingOption}
-      />
+      <div class="schedulingOption">
+        <RadioButton
+          label={daily}
+          name="scheduling-option"
+          value={daily}
+          checked={selectedSchedulingOption === "Daily"}
+          onChange={setSelectedSchedulingOption}
+        />
 
-      <MinuteInput value={minutes} onChange={setMinutes} />
+        <MinuteInput value={minutes} onChange={setMinutes} />
+      </div>
 
-      <RadioButton
-        label={monthly}
-        name="scheduling-option"
-        value={monthly}
-        checked={selectedSchedulingOption === "Monthly"}
-        onChange={setSelectedSchedulingOption}
-      />
-
+      <div class="schedulingOption">
+        <RadioButton
+          label={monthly}
+          name="scheduling-option"
+          value={monthly}
+          checked={selectedSchedulingOption === "Monthly"}
+          onChange={setSelectedSchedulingOption}
+        />
+      </div>
+      <div class="schedulingOption"></div>
       <RadioButton
         label={custom}
         name="scheduling-option"
@@ -70,10 +82,13 @@ function App() {
         onChange={setSelectedSchedulingOption}
       />
 
-      <TextArea value={text} onChange={setText}/>
-
-      <Button children={"Save"}></Button>
-      <Button children={"Load"}></Button>
+      <div className={"fullWidth"}>
+      <TextArea value={text} onChange={setText} />
+      <div className={"buttonGroup"}>
+        <Button children={"Save"}></Button>
+        <Button children={"Load"}></Button>
+      </div>
+      </div>
     </div>
   );
 }
