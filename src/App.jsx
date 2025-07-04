@@ -7,75 +7,22 @@ import TimePicker from "./components/TimePicker";
 import NumberInput from "./components/NumberInput";
 import TextArea from "./components/TextArea";
 import Button from "./components/Button";
-
-const weekdays = {
-  list: [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday",
-  ],
-  map: {
-    Sunday: 0,
-    Monday: 1,
-    Tuesday: 2,
-    Wednesday: 3,
-    Thursday: 4,
-    Friday: 5,
-    Saturday: 6,
-  },
-};
-
-const months = {
-  list: [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ],
-  map: {
-    January: 1,
-    February: 2,
-    March: 3,
-    April: 4,
-    May: 5,
-    June: 6,
-    July: 7,
-    August: 8,
-    September: 9,
-    October: 10,
-    November: 11,
-    December: 12,
-  },
-};
-
-const weekly = "Weekly";
-const daily = "Daily";
-const monthly = "Monthly";
-const custom = "Custom";
+import { weekdays, months, SCHEDULE_TYPES, schedulingOption } from "./constants/constants";
 
 function App() {
-  const [scheduleType, setScheduleType] = useState(weekly);
+  const [scheduleType, setScheduleType] = useState(SCHEDULE_TYPES.WEEKLY);
 
   const [selectedWeekday, setSelectedWeekday] = useState("");
   const [dateTimeWeekly, setDateTimeWeekly] = useState(null);
 
   const [minutes, setMinutes] = useState("");
 
-  const [selecteMonth, setSelecteMonth] = useState("");
+  const [dailyTime1, setDailyTime1] = useState(null);
+  const [dailyTime2, setDailyTime2] = useState(null);
+
+  const [selectedMonth, setSelectedMonth] = useState("");
   const [dayOfMonth, setDayOfMonth] = useState("");
-  const [dateTimeWMonthy, setdateTimeWMonthy] = useState(null);
+  const [dateTimeMonthy, setdateTimeMonthy] = useState(null);
 
   const [cronText, setCronText] = useState("");
 
@@ -83,11 +30,11 @@ function App() {
     let newCronString = "";
 
     switch (scheduleType) {
-      case "Weekly": {
+      case SCHEDULE_TYPES.WEEKLY: {
         if (!selectedWeekday || !dateTimeWeekly) {
-            toast.error("Please select a weekday and time");
-            return;
-        };
+          toast.error("Please select a weekday and time");
+          return;
+        }
 
         const day = weekdays.map[selectedWeekday];
         const hour = dateTimeWeekly.getHours();
@@ -97,7 +44,24 @@ function App() {
         break;
       }
 
-      case "Daily": {
+      case SCHEDULE_TYPES.DAILY: {
+        if (!dailyTime1 && !dailyTime2) {
+          toast.error("Please set at least one time");
+          return;
+        }
+
+        const times = [dailyTime1, dailyTime2].filter(Boolean);
+        const cronParts = times.map((time) => {
+          const hour = time.getHours();
+          const minute = time.getMinutes();
+          return `${minute} ${hour} * * *`;
+        });
+
+        newCronString = cronParts.join(" | ");
+        break;
+      }
+
+      case SCHEDULE_TYPES.TIME_INTERVAL: {
         const minuteInterval = parseInt(minutes, 10);
 
         if (
@@ -113,16 +77,16 @@ function App() {
         break;
       }
 
-      case "Monthly": {
-        if (!dayOfMonth || !selecteMonth || !dateTimeWMonthy) {
+      case SCHEDULE_TYPES.MONTHLY: {
+        if (!dayOfMonth || !selectedMonth || !dateTimeMonthy) {
           toast.error("Please complete all fields");
           return;
         }
 
-        const month = months.map[selecteMonth];
+        const month = months.map[selectedMonth];
         const day = parseInt(dayOfMonth);
-        const hour = dateTimeWMonthy.getHours();
-        const minute = dateTimeWMonthy.getMinutes();
+        const hour = dateTimeMonthy.getHours();
+        const minute = dateTimeMonthy.getMinutes();
 
         if (!month || isNaN(day)) {
           toast.error("Invalid day or month");
@@ -131,8 +95,14 @@ function App() {
 
         const now = new Date();
         let scheduledYear = now.getFullYear();
-        const scheduledDate = new Date(scheduledYear, month - 1, day, hour, minute);
-        
+        const scheduledDate = new Date(
+          scheduledYear,
+          month - 1,
+          day,
+          hour,
+          minute
+        );
+
         if (scheduledDate < now) {
           scheduledYear++;
         }
@@ -141,17 +111,12 @@ function App() {
 
         if (day < 1 || day > daysInMonth) {
           toast.error(
-            `${selecteMonth} ${scheduledYear} only has ${daysInMonth} days. Please enter a valid day`
+            `${selectedMonth} ${scheduledYear} only has ${daysInMonth} days. Please enter a valid day`
           );
           return;
         }
 
         newCronString = `${minute} ${hour} ${day} ${month} *`;
-        break;
-      }
-
-      case "Custom": {
-        newCronString = cronText;
         break;
       }
 
@@ -165,9 +130,38 @@ function App() {
   };
 
   const handleLoad = () => {
-    const parts = cronText.trim().split(" ");
+    const raw = cronText.trim();
+
+    if (raw.includes("|")) {
+      const partsList = raw.split("|").map((p) => p.trim());
+
+      const validFormat = partsList.every((p) =>
+        /^\d+\s+\d+\s+\*\s+\*\s+\*$/.test(p)
+      );
+
+      if (validFormat) {
+        const times = partsList.map((p) => {
+          const [min, hour] = p.split(" ");
+          const date = new Date();
+          date.setHours(parseInt(hour, 10));
+          date.setMinutes(parseInt(min, 10));
+          return date;
+        });
+
+        setDailyTime1(times[0] || null);
+        setDailyTime2(times[1] || null);
+        setScheduleType(SCHEDULE_TYPES.DAILY);
+        toast.success("Daily schedule loaded!");
+        return;
+      } else {
+      toast.error("Invalid format for daily schedule");
+      return;
+    }
+    }
+
+    const parts = raw.split(" ");
     if (parts.length !== 5) {
-      setScheduleType(custom);
+      toast.error("Invalid cron expression format");
       return;
     }
 
@@ -183,9 +177,13 @@ function App() {
       const minuteInterval = min.slice(2);
       if (!isNaN(minuteInterval)) {
         setMinutes(minuteInterval);
-        setScheduleType(daily);
+        setScheduleType(SCHEDULE_TYPES.TIME_INTERVAL);
+        toast.success("Time interval schedule loaded!");
         return;
-      }
+      } else {
+      toast.error("Invalid minute interval");
+      return;
+    }
     }
 
     if (
@@ -208,9 +206,13 @@ function App() {
 
         setSelectedWeekday(weekdayName);
         setDateTimeWeekly(date);
-        setScheduleType(weekly);
+        setScheduleType(SCHEDULE_TYPES.WEEKLY);
+        toast.success("Weekly schedule loaded!");
         return;
-      }
+      } else {
+      toast.error("Invalid weekday value");
+      return;
+    }
     }
 
     if (
@@ -233,98 +235,113 @@ function App() {
         date.setMinutes(parseInt(min));
 
         setDayOfMonth(day.toString());
-        setSelecteMonth(monthName);
-        setdateTimeWMonthy(date);
-        setScheduleType(monthly);
+        setSelectedMonth(monthName);
+        setdateTimeMonthy(date);
+        setScheduleType(SCHEDULE_TYPES.MONTHLY);
+        toast.success("Monthly schedule loaded!");
         return;
-      }
+      } else {
+      toast.error("Invalid month value");
+      return;
+    }
     }
 
-    setScheduleType(custom);
+    toast.error("Unsupported syntax. We could not process your request at this time");
   };
 
   return (
     <div className={styles.container}>
       <div className={styles.schedulingOption}>
         <RadioButton
-          label={weekly}
-          name="scheduling-option"
-          value={weekly}
-          checked={scheduleType === "Weekly"}
+          label={SCHEDULE_TYPES.WEEKLY}
+          name={schedulingOption}
+          value={SCHEDULE_TYPES.WEEKLY}
+          checked={scheduleType === SCHEDULE_TYPES.WEEKLY}
           onChange={setScheduleType}
         />
 
-        <div className={styles.verticalStack}>
-          <SelectBox
-            options={weekdays.list}
-            value={selectedWeekday}
-            defaultSelection={"Select weekday"}
-            onChange={setSelectedWeekday}
-          />
-
-          <TimePicker value={dateTimeWeekly} onChange={setDateTimeWeekly} />
-        </div>
+        {scheduleType === SCHEDULE_TYPES.WEEKLY && (
+          <div className={styles.verticalStack}>
+            <SelectBox
+              options={weekdays.list}
+              value={selectedWeekday}
+              defaultSelection={"Select weekday"}
+              onChange={setSelectedWeekday}
+            />
+            <TimePicker value={dateTimeWeekly} onChange={setDateTimeWeekly} />
+          </div>
+        )}
       </div>
 
       <div className={styles.schedulingOption}>
         <RadioButton
-          label={daily}
-          name="scheduling-option"
-          value={daily}
-          checked={scheduleType === "Daily"}
+          label={SCHEDULE_TYPES.DAILY}
+          name={schedulingOption}
+          value={SCHEDULE_TYPES.DAILY}
+          checked={scheduleType === SCHEDULE_TYPES.DAILY}
           onChange={setScheduleType}
         />
 
-        <NumberInput
-          value={minutes}
-          maxInput="59"
-          placeholder="Enter minute interval"
-          onChange={setMinutes}
-        />
+        {scheduleType === SCHEDULE_TYPES.DAILY && (
+          <div className={styles.verticalStack}>
+            <TimePicker value={dailyTime1} onChange={setDailyTime1} />
+            <TimePicker value={dailyTime2} onChange={setDailyTime2} />
+          </div>
+        )}
       </div>
 
       <div className={styles.schedulingOption}>
         <RadioButton
-          label={monthly}
-          name="scheduling-option"
-          value={monthly}
-          checked={scheduleType === "Monthly"}
+          label={SCHEDULE_TYPES.TIME_INTERVAL}
+          name={schedulingOption}
+          value={SCHEDULE_TYPES.TIME_INTERVAL}
+          checked={scheduleType === SCHEDULE_TYPES.TIME_INTERVAL}
           onChange={setScheduleType}
         />
 
-        <div className={styles.verticalStack}>
+        {scheduleType === SCHEDULE_TYPES.TIME_INTERVAL && (
           <NumberInput
-            value={dayOfMonth}
-            maxInput="31"
-            placeholder="Nth day of the month"
-            onChange={setDayOfMonth}
+            value={minutes}
+            maxInput="59"
+            placeholder="Enter minute interval"
+            onChange={setMinutes}
           />
-
-          <SelectBox
-            options={months.list}
-            value={selecteMonth}
-            defaultSelection={"Select month"}
-            onChange={setSelecteMonth}
-          />
-
-          <TimePicker value={dateTimeWMonthy} onChange={setdateTimeWMonthy} />
-        </div>
+        )}
       </div>
 
-      <div className={styles.schedulingOption}></div>
-      <RadioButton
-        label={custom}
-        name="scheduling-option"
-        value={custom}
-        checked={scheduleType === "Custom"}
-        onChange={setScheduleType}
-      />
+      <div className={styles.schedulingOption}>
+        <RadioButton
+          label={SCHEDULE_TYPES.MONTHLY}
+          name={schedulingOption}
+          value={SCHEDULE_TYPES.MONTHLY}
+          checked={scheduleType === SCHEDULE_TYPES.MONTHLY}
+          onChange={setScheduleType}
+        />
+
+        {scheduleType === SCHEDULE_TYPES.MONTHLY && (
+          <div className={styles.verticalStack}>
+            <NumberInput
+              value={dayOfMonth}
+              maxInput="31"
+              placeholder="N-th day of the month"
+              onChange={setDayOfMonth}
+            />
+            <SelectBox
+              options={months.list}
+              value={selectedMonth}
+              defaultSelection={"Select month"}
+              onChange={setSelectedMonth}
+            />
+            <TimePicker value={dateTimeMonthy} onChange={setdateTimeMonthy} />
+          </div>
+        )}
+      </div>
 
       <div className={styles.fullWidth}>
         <TextArea value={cronText} onChange={setCronText} />
         <div className={styles.buttonGroup}>
-          <Button children={"Save"} onClick={handleSave}></Button>
-          <Button children={"Load"} onClick={handleLoad}></Button>
+          <Button children="Save" onClick={handleSave}>Save</Button>
+          <Button children="Load" onClick={handleLoad}>Load</Button>
         </div>
       </div>
     </div>
