@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "react-hot-toast";
 import styles from "./App.module.css";
 import SelectBox from "./components/SelectBox";
 import RadioButton from "./components/RadioButton";
@@ -82,30 +83,68 @@ function App() {
     let newCronString = "";
 
     switch (scheduleType) {
-      case "Daily": {
-        const minuteInterval = minutes;
-        newCronString = `*/${minuteInterval} * * * *`;
-        break;
-      }
-
       case "Weekly": {
-        if (!selectedWeekday || !dateTimeWeekly) return;
+        if (!selectedWeekday || !dateTimeWeekly) {
+            toast.error("Please select a weekday and time");
+            return;
+        };
+
+        const day = weekdays.map[selectedWeekday];
         const hour = dateTimeWeekly.getHours();
         const minute = dateTimeWeekly.getMinutes();
-        const day = weekdays.map[selectedWeekday];
+
         newCronString = `${minute} ${hour} * * ${day}`;
         break;
       }
 
+      case "Daily": {
+        const minuteInterval = parseInt(minutes, 10);
+
+        if (
+          isNaN(minuteInterval) ||
+          minuteInterval < 1 ||
+          minuteInterval > 59
+        ) {
+          toast.error("Please enter a number between 1 and 59 for minutes");
+          return;
+        }
+
+        newCronString = `*/${minuteInterval} * * * *`;
+        break;
+      }
+
       case "Monthly": {
-        if (!dayOfMonth || !selecteMonth || !dateTimeWMonthy) return;
+        if (!dayOfMonth || !selecteMonth || !dateTimeWMonthy) {
+          toast.error("Please complete all fields");
+          return;
+        }
 
         const month = months.map[selecteMonth];
         const day = parseInt(dayOfMonth);
         const hour = dateTimeWMonthy.getHours();
         const minute = dateTimeWMonthy.getMinutes();
 
-        if (!month || isNaN(day)) return;
+        if (!month || isNaN(day)) {
+          toast.error("Invalid day or month");
+          return;
+        }
+
+        const now = new Date();
+        let scheduledYear = now.getFullYear();
+        const scheduledDate = new Date(scheduledYear, month - 1, day, hour, minute);
+        
+        if (scheduledDate < now) {
+          scheduledYear++;
+        }
+
+        const daysInMonth = new Date(scheduledYear, month, 0).getDate();
+
+        if (day < 1 || day > daysInMonth) {
+          toast.error(
+            `${selecteMonth} ${scheduledYear} only has ${daysInMonth} days. Please enter a valid day`
+          );
+          return;
+        }
 
         newCronString = `${minute} ${hour} ${day} ${month} *`;
         break;
@@ -117,11 +156,12 @@ function App() {
       }
 
       default: {
-        newCronString = "Unsupported schedule type";
+        toast.error("Unsupported schedule type");
       }
     }
 
     setCronText(newCronString);
+    toast.success("Schedule saved!");
   };
 
   const handleLoad = () => {
@@ -218,6 +258,7 @@ function App() {
           <SelectBox
             options={weekdays.list}
             value={selectedWeekday}
+            defaultSelection={"Select weekday"}
             onChange={setSelectedWeekday}
           />
 
@@ -262,6 +303,7 @@ function App() {
           <SelectBox
             options={months.list}
             value={selecteMonth}
+            defaultSelection={"Select month"}
             onChange={setSelecteMonth}
           />
 

@@ -1,7 +1,7 @@
-function SelectBox({ options, value, onChange }) {
+function SelectBox({ options, value, defaultSelection, onChange }) {
   return (
     <select value={value} onChange={(e) => onChange(e.target.value)}>
-      <option value="" disabled>Choose day</option>
+      <option value="" disabled>{defaultSelection}</option>
       {options.map((option, index) => (
         <option key={index} value={option}>
           {option}
