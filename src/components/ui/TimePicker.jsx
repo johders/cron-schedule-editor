@@ -1,5 +1,6 @@
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import styles from "./TimePicker.module.css";
 
 function TimePicker({ value, onChange }) {
   return (
@@ -12,6 +13,8 @@ function TimePicker({ value, onChange }) {
       timeCaption="Time"
       dateFormat="h:mm aa"
       placeholderText="Select time"
+      className={styles.customTimePicker}
+      popperPlacement="bottom"
     />
   );
 }

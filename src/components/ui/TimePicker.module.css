@@ -1,0 +1,43 @@
+.customTimePicker {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  background-color: #ffffff;
+  cursor: pointer;
+}
+.customTimePicker:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  border-color: #4870c7;
+}
+.customTimePicker::placeholder {
+  color: #6b7280;
+}
+
+:global(.react-datepicker) {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  background-color: #ffffff;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+:global(.react-datepicker__triangle) {
+  display: none;
+}
+
+:global(.react-datepicker__time-list-item) {
+  padding: 8px 12px !important;
+  transition: background-color 0.2s ease-in-out;
+}
+
+:global(.react-datepicker__time-list-item:hover) {
+  background-color: #eef2ff !important; 
+}
+
+:global(.react-datepicker__time-list-item--selected) {
+  background-color: #4870c7 !important; 
+  color: white !important;
+  font-weight: bold !important;
+}

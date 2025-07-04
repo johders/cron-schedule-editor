@@ -13,8 +13,6 @@ function MonthlySchedule({
   setdateTimeMonthy,
 }) {
   return (
-    <fieldset>
-      <legend>Monthly schedule</legend>
       <div className={styles.verticalStack}>
         <span>Every</span>
         <NumberInput
@@ -33,7 +31,6 @@ function MonthlySchedule({
         <span>At</span>
         <TimePicker value={dateTimeMonthy} onChange={setdateTimeMonthy} />
       </div>
-    </fieldset>
   );
 }
 

@@ -2,16 +2,11 @@ import NumberInput from "../ui/NumberInput";
 
 function TimeIntervalSchedule({ minutes, setMinutes }) {
   return (
-    <fieldset>
-      <legend>Set time interval</legend>
+    <div>
       <span>Every</span>
-      <NumberInput
-        value={minutes}
-        maxInput="59"
-        onChange={setMinutes}
-      />
+      <NumberInput value={minutes} maxInput="59" onChange={setMinutes} />
       <span>Minutes</span>
-    </fieldset>
+    </div>
   );
 }
 

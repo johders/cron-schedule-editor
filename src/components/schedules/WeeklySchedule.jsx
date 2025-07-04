@@ -10,8 +10,6 @@ function WeeklySchedule({
   setDateTimeWeekly,
 }) {
   return (
-    <fieldset>
-      <legend>Monthly schedule</legend>
       <div className={styles.verticalStack}>
         <SelectBox
           options={weekdays.list}
@@ -21,7 +19,6 @@ function WeeklySchedule({
         />
         <TimePicker value={dateTimeWeekly} onChange={setDateTimeWeekly} />
       </div>
-    </fieldset>
   );
 }
 
