@@ -76,9 +76,7 @@ function App() {
   const [dayOfMonth, setDayOfMonth] = useState("");
   const [dateTimeWMonthy, setdateTimeWMonthy] = useState(null);
 
-  const [text, setText] = useState("Nothing scheduled");
-
-  const [cronString, setCronString] = useState("");
+  const [cronText, setCronText] = useState("");
 
   const handleSave = () => {
     let newCronString = "";
@@ -114,7 +112,7 @@ function App() {
       }
 
       case "Custom": {
-        newCronString = text;
+        newCronString = cronText;
         break;
       }
 
@@ -123,7 +121,86 @@ function App() {
       }
     }
 
-    setCronString(newCronString);
+    setCronText(newCronString);
+  };
+
+  const handleLoad = () => {
+    const parts = cronText.trim().split(" ");
+    if (parts.length !== 5) {
+      setScheduleType(custom);
+      return;
+    }
+
+    const [min, hour, dayOfMonthStr, monthStr, dayOfWeekStr] = parts;
+
+    if (
+      min.startsWith("*/") &&
+      hour === "*" &&
+      dayOfMonthStr === "*" &&
+      monthStr === "*" &&
+      dayOfWeekStr === "*"
+    ) {
+      const minuteInterval = min.slice(2);
+      if (!isNaN(minuteInterval)) {
+        setMinutes(minuteInterval);
+        setScheduleType(daily);
+        return;
+      }
+    }
+
+    if (
+      !isNaN(min) &&
+      !isNaN(hour) &&
+      dayOfMonthStr === "*" &&
+      monthStr === "*" &&
+      !isNaN(dayOfWeekStr)
+    ) {
+      const weekdayNumber = parseInt(dayOfWeekStr);
+      const weekdayEntry = Object.entries(weekdays.map).find(
+        ([, value]) => value === weekdayNumber
+      );
+
+      if (weekdayEntry) {
+        const weekdayName = weekdayEntry[0];
+        const date = new Date();
+        date.setHours(parseInt(hour));
+        date.setMinutes(parseInt(min));
+
+        setSelectedWeekday(weekdayName);
+        setDateTimeWeekly(date);
+        setScheduleType(weekly);
+        return;
+      }
+    }
+
+    if (
+      !isNaN(min) &&
+      !isNaN(hour) &&
+      !isNaN(dayOfMonthStr) &&
+      !isNaN(monthStr) &&
+      dayOfWeekStr === "*"
+    ) {
+      const monthNumber = parseInt(monthStr);
+      const monthEntry = Object.entries(months.map).find(
+        ([, value]) => value === monthNumber
+      );
+
+      if (monthEntry) {
+        const monthName = monthEntry[0];
+        const day = parseInt(dayOfMonthStr);
+        const date = new Date();
+        date.setHours(parseInt(hour));
+        date.setMinutes(parseInt(min));
+
+        setDayOfMonth(day.toString());
+        setSelecteMonth(monthName);
+        setdateTimeWMonthy(date);
+        setScheduleType(monthly);
+        return;
+      }
+    }
+
+    setScheduleType(custom);
   };
 
   return (
@@ -202,10 +279,10 @@ function App() {
       />
 
       <div className={styles.fullWidth}>
-        <TextArea value={cronString} onChange={setText} />
+        <TextArea value={cronText} onChange={setCronText} />
         <div className={styles.buttonGroup}>
           <Button children={"Save"} onClick={handleSave}></Button>
-          <Button children={"Load"}></Button>
+          <Button children={"Load"} onClick={handleLoad}></Button>
         </div>
       </div>
     </div>
