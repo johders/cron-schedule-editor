@@ -3,25 +3,27 @@ import { weekdays, months, SCHEDULE_TYPES } from "../constants/constants";
 
 export function generateCronString({
   scheduleType,
-  selectedWeekday,
+  selectedWeekdays,
   dateTimeWeekly,
   dailyTime1,
   dailyTime2,
   minutes,
-  selectedMonth,
+  selectedMonths,
   dayOfMonth,
   dateTimeMonthy,
 }) {
   switch (scheduleType) {
     case SCHEDULE_TYPES.WEEKLY: {
-      if (!selectedWeekday || !dateTimeWeekly) {
-        toast.error("Please select a weekday and time");
+      if (!selectedWeekdays?.length || !dateTimeWeekly) {
+        toast.error("Please select at least one weekday and time");
         return null;
       }
-      const day = weekdays.map[selectedWeekday];
+
+      const days = selectedWeekdays.map((day) => weekdays.map[day]);
       const hour = dateTimeWeekly.getHours();
       const minute = dateTimeWeekly.getMinutes();
-      return `${minute} ${hour} * * ${day}`;
+
+      return `${minute} ${hour} * * ${days.join(",")}`;
     }
 
     case SCHEDULE_TYPES.DAILY: {
@@ -45,45 +47,41 @@ export function generateCronString({
     }
 
     case SCHEDULE_TYPES.MONTHLY: {
-      if (!dayOfMonth || !selectedMonth || !dateTimeMonthy) {
+      if (!dayOfMonth || !selectedMonths.length || !dateTimeMonthy) {
         toast.error("Please complete all fields");
         return null;
       }
 
-      const month = months.map[selectedMonth];
+      const monthNumbers = selectedMonths
+        .map((monthName) => months.map[monthName])
+        .filter(Boolean);
+
       const day = parseInt(dayOfMonth);
       const hour = dateTimeMonthy.getHours();
       const minute = dateTimeMonthy.getMinutes();
 
-      if (!month || isNaN(day)) {
+      if (monthNumbers.length === 0 || isNaN(day)) {
         toast.error("Invalid day or month");
         return null;
       }
 
       const now = new Date();
-      let scheduledYear = now.getFullYear();
-      const scheduledDate = new Date(
-        scheduledYear,
-        month - 1,
-        day,
-        hour,
-        minute
-      );
+      const currentYear = now.getFullYear();
 
-      if (scheduledDate < now) {
-        scheduledYear++;
+      for (const month of monthNumbers) {
+        const daysInMonth = new Date(currentYear, month, 0).getDate();
+        if (day > daysInMonth) {
+          const monthName = Object.entries(months.map).find(
+            ([, val]) => val === month
+          )?.[0];
+          toast.error(
+            `${monthName} only has ${daysInMonth} days. Please enter a valid day`
+          );
+          return null;
+        }
       }
 
-      const daysInMonth = new Date(scheduledYear, month, 0).getDate();
-
-      if (day < 1 || day > daysInMonth) {
-        toast.error(
-          `${selectedMonth} ${scheduledYear} only has ${daysInMonth} days. Please enter a valid day`
-        );
-        return null;
-      }
-
-      return `${minute} ${hour} ${day} ${month} *`;
+      return `${minute} ${hour} ${day} ${monthNumbers.join(",")} *`;
     }
 
     default:
@@ -98,9 +96,9 @@ export function parseCronExpression(cronText, setStateHandlers) {
     setDailyTime2,
     setScheduleType,
     setMinutes,
-    setSelectedWeekday,
+    setSelectedWeekdays,
     setDateTimeWeekly,
-    setSelectedMonth,
+    setSelectedMonths,
     setDayOfMonth,
     setdateTimeMonthy,
   } = setStateHandlers;
@@ -169,26 +167,28 @@ export function parseCronExpression(cronText, setStateHandlers) {
     !isNaN(hour) &&
     dayOfMonthStr === "*" &&
     monthStr === "*" &&
-    !isNaN(dayOfWeekStr)
+    dayOfWeekStr.match(/^(\d,?)+$/)
   ) {
-    const weekdayNumber = parseInt(dayOfWeekStr);
-    const weekdayEntry = Object.entries(weekdays.map).find(
-      ([, value]) => value === weekdayNumber
-    );
+    const weekdayNumbers = dayOfWeekStr.split(",").map(Number);
+    const selectedWeekdays = weekdayNumbers
+      .map(
+        (num) =>
+          Object.entries(weekdays.map).find(([, value]) => value === num)?.[0]
+      )
+      .filter(Boolean);
 
-    if (weekdayEntry) {
-      const weekdayName = weekdayEntry[0];
+    if (selectedWeekdays.length) {
       const date = new Date();
       date.setHours(parseInt(hour));
       date.setMinutes(parseInt(min));
 
-      setSelectedWeekday(weekdayName);
+      setSelectedWeekdays(selectedWeekdays);
       setDateTimeWeekly(date);
       setScheduleType(SCHEDULE_TYPES.WEEKLY);
       toast.success("Weekly schedule loaded!");
       return;
     } else {
-      toast.error("Invalid weekday value");
+      toast.error("Invalid weekdays input");
       return;
     }
   }
@@ -197,29 +197,31 @@ export function parseCronExpression(cronText, setStateHandlers) {
     !isNaN(min) &&
     !isNaN(hour) &&
     !isNaN(dayOfMonthStr) &&
-    !isNaN(monthStr) &&
+    monthStr.match(/^(\d+,?)+$/) &&
     dayOfWeekStr === "*"
   ) {
-    const monthNumber = parseInt(monthStr);
-    const monthEntry = Object.entries(months.map).find(
-      ([, value]) => value === monthNumber
-    );
+    const monthNumbers = monthStr.split(",").map(Number);
+    const monthNames = monthNumbers
+      .map(
+        (num) =>
+          Object.entries(months.map).find(([, value]) => value === num)?.[0]
+      )
+      .filter(Boolean);
 
-    if (monthEntry) {
-      const monthName = monthEntry[0];
+    if (monthNames.length) {
       const day = parseInt(dayOfMonthStr);
       const date = new Date();
       date.setHours(parseInt(hour));
       date.setMinutes(parseInt(min));
 
       setDayOfMonth(day.toString());
-      setSelectedMonth(monthName);
+      setSelectedMonths(monthNames);
       setdateTimeMonthy(date);
       setScheduleType(SCHEDULE_TYPES.MONTHLY);
       toast.success("Monthly schedule loaded!");
       return;
     } else {
-      toast.error("Invalid month value");
+      toast.error("Invalid month values");
       return;
     }
   }

@@ -14,7 +14,7 @@ import MonthlySchedule from "./components/schedules/MonthlySchedule";
 function App() {
   const [scheduleType, setScheduleType] = useState(SCHEDULE_TYPES.WEEKLY);
 
-  const [selectedWeekday, setSelectedWeekday] = useState("");
+  const [selectedWeekdays, setSelectedWeekdays] = useState([]);
   const [dateTimeWeekly, setDateTimeWeekly] = useState(null);
 
   const [minutes, setMinutes] = useState("");
@@ -22,7 +22,7 @@ function App() {
   const [dailyTime1, setDailyTime1] = useState(null);
   const [dailyTime2, setDailyTime2] = useState(null);
 
-  const [selectedMonth, setSelectedMonth] = useState("");
+  const [selectedMonths, setSelectedMonths] = useState([]);
   const [dayOfMonth, setDayOfMonth] = useState("");
   const [dateTimeMonthy, setdateTimeMonthy] = useState(null);
 
@@ -31,12 +31,12 @@ function App() {
   const handleSave = () => {
     const cron = generateCronString({
       scheduleType,
-      selectedWeekday,
+      selectedWeekdays,
       dateTimeWeekly,
       dailyTime1,
       dailyTime2,
       minutes,
-      selectedMonth,
+      selectedMonths,
       dayOfMonth,
       dateTimeMonthy,
     });
@@ -53,9 +53,9 @@ function App() {
       setDailyTime2,
       setScheduleType,
       setMinutes,
-      setSelectedWeekday,
+      setSelectedWeekdays,
       setDateTimeWeekly,
-      setSelectedMonth,
+      setSelectedMonths,
       setDayOfMonth,
       setdateTimeMonthy,
     });
@@ -63,6 +63,7 @@ function App() {
 
   return (
     <div className={styles.container}>
+      <h1>CRON Schedule editor</h1>
       <div className={styles.schedulingOption}>
         <RadioButton
           label={SCHEDULE_TYPES.WEEKLY}
@@ -74,8 +75,8 @@ function App() {
 
         {scheduleType === SCHEDULE_TYPES.WEEKLY && (
           <WeeklySchedule
-            selectedWeekday={selectedWeekday}
-            setSelectedWeekday={setSelectedWeekday}
+            selectedWeekdays={selectedWeekdays}
+            setSelectedWeekdays={setSelectedWeekdays}
             dateTimeWeekly={dateTimeWeekly}
             setDateTimeWeekly={setDateTimeWeekly}
           />
@@ -128,8 +129,8 @@ function App() {
           <MonthlySchedule
             dayOfMonth={dayOfMonth}
             setDayOfMonth={setDayOfMonth}
-            selectedMonth={selectedMonth}
-            setSelectedMonth={setSelectedMonth}
+            selectedMonths={selectedMonths}
+            setSelectedMonths={setSelectedMonths}
             dateTimeMonthy={dateTimeMonthy}
             setdateTimeMonthy={setdateTimeMonthy}
           />

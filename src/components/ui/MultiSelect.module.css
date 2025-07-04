@@ -1,0 +1,25 @@
+.tileContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tile {
+  padding: 0.5rem 1rem;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  background-color: white;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tile:hover {
+  background-color: #bdc4d3;
+}
+
+.selected {
+  background-color: #688bd6;
+  color: white;
+  border-color: #688bd6;
+}
