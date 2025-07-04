@@ -20,7 +20,7 @@
   white-space: nowrap;
 }
 
-.weeklyControls {
+.verticalStack {
   display: flex;
   flex-direction: column;
   gap: 10px;
