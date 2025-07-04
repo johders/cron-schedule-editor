@@ -107,8 +107,11 @@ export function parseCronExpression(cronText, setStateHandlers) {
 
   const raw = cronText.trim();
 
-  if (raw.includes("|")) {
-    const partsList = raw.split("|").map((p) => p.trim());
+  const isDailyCron = /^\d+\s+\d+\s+\*\s+\*\s+\*$/.test(raw);
+  if (isDailyCron || raw.includes("|")) {
+    const partsList = raw.includes("|")
+      ? raw.split("|").map((p) => p.trim())
+      : [raw];
 
     const validFormat = partsList.every((p) =>
       /^\d+\s+\d+\s+\*\s+\*\s+\*$/.test(p)

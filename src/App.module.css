@@ -26,11 +26,6 @@
   gap: 10px;
 }
 
-.dailyControls {
-  display: flex;
-  align-items: center;
-}
-
 .fullWidth {
   grid-column: 1 / -1;
   display: flex;
