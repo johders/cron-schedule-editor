@@ -1,19 +1,15 @@
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import styles from "./App.module.css";
-import SelectBox from "./components/SelectBox";
-import RadioButton from "./components/RadioButton";
-import TimePicker from "./components/TimePicker";
-import NumberInput from "./components/NumberInput";
-import TextArea from "./components/TextArea";
-import Button from "./components/Button";
-import {
-  weekdays,
-  months,
-  SCHEDULE_TYPES,
-  schedulingOption,
-} from "./constants/constants";
+import RadioButton from "./components/ui/RadioButton";
+import TextArea from "./components/ui/TextArea";
+import Button from "./components/ui/Button";
+import { SCHEDULE_TYPES, schedulingOption } from "./constants/constants";
 import { generateCronString, parseCronExpression } from "./utils/cronUtils";
+import WeeklySchedule from "./components/schedules/WeeklySchedule";
+import DailySchedule from "./components/schedules/DailySchedule";
+import TimeIntervalSchedule from "./components/schedules/TimeIntervalSchedule";
+import MonthlySchedule from "./components/schedules/MonthlySchedule";
 
 function App() {
   const [scheduleType, setScheduleType] = useState(SCHEDULE_TYPES.WEEKLY);
@@ -77,15 +73,12 @@ function App() {
         />
 
         {scheduleType === SCHEDULE_TYPES.WEEKLY && (
-          <div className={styles.verticalStack}>
-            <SelectBox
-              options={weekdays.list}
-              value={selectedWeekday}
-              defaultSelection={"Select weekday"}
-              onChange={setSelectedWeekday}
-            />
-            <TimePicker value={dateTimeWeekly} onChange={setDateTimeWeekly} />
-          </div>
+          <WeeklySchedule
+            selectedWeekday={selectedWeekday}
+            setSelectedWeekday={setSelectedWeekday}
+            dateTimeWeekly={dateTimeWeekly}
+            setDateTimeWeekly={setDateTimeWeekly}
+          />
         )}
       </div>
 
@@ -99,10 +92,12 @@ function App() {
         />
 
         {scheduleType === SCHEDULE_TYPES.DAILY && (
-          <div className={styles.verticalStack}>
-            <TimePicker value={dailyTime1} onChange={setDailyTime1} />
-            <TimePicker value={dailyTime2} onChange={setDailyTime2} />
-          </div>
+          <DailySchedule
+            dailyTime1={dailyTime1}
+            setDailyTime1={setDailyTime1}
+            dailyTime2={dailyTime2}
+            setDailyTime2={setDailyTime2}
+          />
         )}
       </div>
 
@@ -116,12 +111,7 @@ function App() {
         />
 
         {scheduleType === SCHEDULE_TYPES.TIME_INTERVAL && (
-          <NumberInput
-            value={minutes}
-            maxInput="59"
-            placeholder="Enter minute interval"
-            onChange={setMinutes}
-          />
+          <TimeIntervalSchedule minutes={minutes} setMinutes={setMinutes} />
         )}
       </div>
 
@@ -135,21 +125,14 @@ function App() {
         />
 
         {scheduleType === SCHEDULE_TYPES.MONTHLY && (
-          <div className={styles.verticalStack}>
-            <NumberInput
-              value={dayOfMonth}
-              maxInput="31"
-              placeholder="N-th day of the month"
-              onChange={setDayOfMonth}
-            />
-            <SelectBox
-              options={months.list}
-              value={selectedMonth}
-              defaultSelection={"Select month"}
-              onChange={setSelectedMonth}
-            />
-            <TimePicker value={dateTimeMonthy} onChange={setdateTimeMonthy} />
-          </div>
+          <MonthlySchedule
+            dayOfMonth={dayOfMonth}
+            setDayOfMonth={setDayOfMonth}
+            selectedMonth={selectedMonth}
+            setSelectedMonth={setSelectedMonth}
+            dateTimeMonthy={dateTimeMonthy}
+            setdateTimeMonthy={setdateTimeMonthy}
+          />
         )}
       </div>
 
