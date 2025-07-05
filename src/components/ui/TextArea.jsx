@@ -1,13 +1,28 @@
 import styles from "./TextArea.module.css";
+import appStyles from "../../App.module.css";
 
-function TextArea({ value, onChange, id }) {
+function TextArea({ value, onChange, id, error }) {
   return (
-    <textarea
-      id={id}
-      className={styles.textarea}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-    />
+    <div className={styles.wrapper}>
+      {error && (
+        <div className={appStyles.errorMessage}>
+          {error}{" "}
+          <a
+            href="https://github.com/johders/.."
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Click here for syntax info
+          </a>
+        </div>
+      )}
+      <textarea
+        id={id}
+        className={styles.textarea}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      />
+    </div>
   );
 }
 

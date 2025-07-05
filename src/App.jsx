@@ -5,7 +5,10 @@ import RadioButton from "./components/ui/RadioButton";
 import TextArea from "./components/ui/TextArea";
 import Button from "./components/ui/Button";
 import { SCHEDULE_TYPES, schedulingOption } from "./constants/constants";
-import { generateCronString, parseCronExpression } from "./utils/cron/cronUtils";
+import {
+  generateCronString,
+  parseCronExpression,
+} from "./utils/cron/cronUtils";
 import WeeklySchedule from "./components/schedules/WeeklySchedule";
 import DailySchedule from "./components/schedules/DailySchedule";
 import TimeIntervalSchedule from "./components/schedules/TimeIntervalSchedule";
@@ -28,7 +31,9 @@ function App() {
 
   const [cronText, setCronText] = useState("");
 
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState({ fields: {}, suppressUI: false });
+
+  const visibleErrors = errors.suppressUI ? {} : errors.fields;
 
   const handleSave = () => {
     const cron = generateCronString({
@@ -45,9 +50,12 @@ function App() {
 
     if (cron?.error) {
       if (cron.details) {
-        setErrors(cron.details);
+        setErrors({ fields: cron.details, suppressUI: false });
       } else {
-        setErrors({ [cron.error]: cron.message });
+        setErrors({
+          fields: { [cron.error]: cron.message },
+          suppressUI: false,
+        });
       }
       toast.error(cron.message);
       return;
@@ -59,7 +67,6 @@ function App() {
   };
 
   const handleLoad = () => {
-
     setErrors({});
 
     const result = parseCronExpression(cronText, {
@@ -75,14 +82,16 @@ function App() {
     });
 
     if (result?.error) {
-    toast.error(result.message || "Failed to parse CRON.");
-    if (result.details) {
-      setErrors(result.details);
+      toast.error(result.message || "Failed to parse CRON.");
+      setErrors({
+        fields: { cronText: result.message, ...result.details },
+        suppressUI: true,
+      });
+      console.log(errors);
+      return;
     }
-    return;
-  }
 
-  toast.success("Schedule loaded!");
+    toast.success("Schedule loaded!");
   };
 
   return (
@@ -103,7 +112,7 @@ function App() {
             setSelectedWeekdays={setSelectedWeekdays}
             dateTimeWeekly={dateTimeWeekly}
             setDateTimeWeekly={setDateTimeWeekly}
-            errors={errors}
+            errors={visibleErrors}
           />
         )}
       </div>
@@ -123,7 +132,7 @@ function App() {
             setDailyTime1={setDailyTime1}
             dailyTime2={dailyTime2}
             setDailyTime2={setDailyTime2}
-            errors={errors}
+            errors={visibleErrors}
           />
         )}
       </div>
@@ -141,7 +150,7 @@ function App() {
           <TimeIntervalSchedule
             minutes={minutes}
             setMinutes={setMinutes}
-            error={errors.minutes}
+            errors={visibleErrors}
           />
         )}
       </div>
@@ -163,20 +172,21 @@ function App() {
             setSelectedMonths={setSelectedMonths}
             dateTimeMonthy={dateTimeMonthy}
             setdateTimeMonthy={setdateTimeMonthy}
-            errors={errors}
+            errors={visibleErrors}
           />
         )}
       </div>
 
       <div className={styles.fullWidth}>
-        <TextArea value={cronText} onChange={setCronText} id="cron-text"/>
+        <TextArea
+          value={cronText}
+          onChange={setCronText}
+          id="cron-text"
+          error={errors.fields.cronText}
+        />
         <div className={styles.buttonGroup}>
-          <Button children="Save" onClick={handleSave}>
-            Save
-          </Button>
-          <Button children="Load" onClick={handleLoad}>
-            Load
-          </Button>
+          <Button children="Save" onClick={handleSave} />
+          <Button children="Load" onClick={handleLoad} />
         </div>
       </div>
     </div>
