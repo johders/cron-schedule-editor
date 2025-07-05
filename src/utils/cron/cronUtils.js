@@ -1,5 +1,11 @@
 import { toast } from "react-hot-toast";
-import { weekdays, months, SCHEDULE_TYPES } from "../constants/constants";
+import { weekdays, months, SCHEDULE_TYPES } from "../../constants/constants";
+import {
+  generateWeeklyCron,
+  generateDailyCron,
+  generateTimeIntervalCron,
+  generateMonthlyCron,
+} from "./generate";
 
 export function generateCronString({
   scheduleType,
@@ -13,111 +19,18 @@ export function generateCronString({
   dateTimeMonthy,
 }) {
   switch (scheduleType) {
-    case SCHEDULE_TYPES.WEEKLY: {
-      const weeklyErrors = {};
-      if (!selectedWeekdays?.length) {
-        weeklyErrors.selectedWeekdays = "Please select at least one weekday";
-      }
-      if (!dateTimeWeekly) {
-        weeklyErrors.dateTimeWeekly = "Please select a time";
-      }
-
-      if (Object.keys(weeklyErrors).length) {
-        return {
-          error: "weekly",
-          message: "Please complete all required fields",
-          details: weeklyErrors,
-        };
-      }
-
-      const days = selectedWeekdays.map((day) => weekdays.map[day]);
-      const hour = dateTimeWeekly.getHours();
-      const minute = dateTimeWeekly.getMinutes();
-
-      return `${minute} ${hour} * * ${days.join(",")}`;
-    }
-
-    case SCHEDULE_TYPES.DAILY: {
-      const dailyErrors = {};
-      if (!dailyTime1 && !dailyTime2) {
-        dailyErrors.dailyTime1 = "Please set at least one time";
-      }
-
-      if (Object.keys(dailyErrors).length) {
-        return {
-          error: "daily",
-          message: "Please complete all required fields",
-          details: dailyErrors,
-        };
-      }
-
-      const times = [dailyTime1, dailyTime2].filter(Boolean);
-      return times
-        .map((time) => `${time.getMinutes()} ${time.getHours()} * * *`)
-        .join(" | ");
-    }
-
-    case SCHEDULE_TYPES.TIME_INTERVAL: {
-      const minuteInterval = parseInt(minutes, 10);
-      if (isNaN(minuteInterval) || minuteInterval < 1 || minuteInterval > 59) {
-        return {
-          error: "minutes",
-          message: "Please enter a number between 1 and 59 for minutes",
-        };
-      }
-      return `*/${minuteInterval} * * * *`;
-    }
-
-    case SCHEDULE_TYPES.MONTHLY: {
-      const monthlyErrors = {};
-      if (!dayOfMonth) {
-        monthlyErrors.dayOfMonth = "Please enter a day of the month";
-      }
-      if (!selectedMonths.length) {
-        monthlyErrors.selectedMonths = "Please select at least one month";
-      }
-      if (!dateTimeMonthy) {
-        monthlyErrors.dateTimeMonthy = "Please select a time";
-      }
-
-      if (Object.keys(monthlyErrors).length) {
-        return {
-          error: "monthly",
-          message: "Please complete all required fields",
-          details: monthlyErrors,
-        };
-      }
-
-      const monthNumbers = selectedMonths
-        .map((monthName) => months.map[monthName])
-        .filter(Boolean);
-
-      const day = parseInt(dayOfMonth);
-      const hour = dateTimeMonthy.getHours();
-      const minute = dateTimeMonthy.getMinutes();
-
-      if (monthNumbers.length === 0 || isNaN(day)) {
-        toast.error("Invalid day or month");
-        return null;
-      }
-
-      const now = new Date();
-      const currentYear = now.getFullYear();
-
-      for (const month of monthNumbers) {
-        const daysInMonth = new Date(currentYear, month, 0).getDate();
-        if (day > daysInMonth) {
-          const monthName = Object.entries(months.map).find(
-            ([, val]) => val === month
-          )?.[0];
-          monthlyErrors.dayOfMonth = `${monthName} only has ${daysInMonth} days. Please enter a valid day`;
-          break;
-        }
-      }
-
-      return `${minute} ${hour} ${day} ${monthNumbers.join(",")} *`;
-    }
-
+    case SCHEDULE_TYPES.WEEKLY:
+      return generateWeeklyCron(selectedWeekdays, dateTimeWeekly);
+    case SCHEDULE_TYPES.DAILY:
+      return generateDailyCron(dailyTime1, dailyTime2);
+    case SCHEDULE_TYPES.TIME_INTERVAL:
+      return generateTimeIntervalCron(minutes);
+    case SCHEDULE_TYPES.MONTHLY:
+      return generateMonthlyCron({
+        selectedMonths,
+        dayOfMonth,
+        dateTimeMonthy,
+      });
     default:
       toast.error("Unsupported schedule type");
       return null;
