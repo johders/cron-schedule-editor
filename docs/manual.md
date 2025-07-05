@@ -87,7 +87,7 @@ Set a schedule that repeats on a specific day of the month, for one or more mont
 Runs a task on a specific day and month at a set time.
 
 * **Format:** `minute hour day-of-month month *`
-* **Day of Month:** A number from `1` to `31` (ensure the day exists in the selected month).
+* **Day of Month:** A number from 1 up to the maximum number of days in the selected month (28, 30, or 31). For example, February allows only 1–28, April allows 1–30, and March allows 1–31.
 * **Month:** A number from `1` (January) to `12` (December).
 * **Example:** Run at 7:50 AM on March 5th.
     ```
@@ -98,7 +98,10 @@ Runs a task on a specific day and month at a set time.
 Runs a task on a specific day of the month, but only during the specified months.
 
 * **Format:** `minute hour day-of-month month-1,month-2 *`
-* **Day of Month:** A number from `1` to `31`.
+* **Day of Month:** Must be between 1 and the smallest maximum day count among all selected months:
+  * If **any** selected month is February (month 2), day must be between **1 and 28**.  
+  * Else if **any** selected month has 30 days (April, June, September, November), day must be between **1 and 30**.  
+  * Only if **all** selected months have 31 days (January, March, May, July, August, October, December) can the day be **1 to 31**.
 * **Months:** A comma-separated list of numbers from `1` to `12`.
 * **Example:** Run at 7:50 AM on the 5th day of the month, but only in March, May, and July.
     ```

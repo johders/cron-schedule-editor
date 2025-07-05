@@ -17,7 +17,7 @@ export function parseTimeInterval(cronText, { setMinutes, setScheduleType }) {
 
 function extractInterval(cronText) {
   const trimmed = cronText.trim();
-  const match = trimmed.match(/^\*\/(\d{1,2})\s\*\s\*\s\*\s\*$/);
+  const match = trimmed.match(/^\*\/(\d+)\s\*\s\*\s\*\s\*$/);
 
   if (!match) {
     return {
