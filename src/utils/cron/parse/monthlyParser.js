@@ -74,6 +74,16 @@ function validateStructure(minStr, hourStr, dayStr, monthStr, dayOfWeek) {
 
 function mapMonths(monthStr) {
   const monthNumbers = monthStr.split(",").map(Number);
+
+  const invalidMonths = monthNumbers.filter((num) => num < 1 || num > 12);
+  if (invalidMonths.length > 0) {
+    return {
+      error: "months",
+      message: `Invalid month values: ${invalidMonths.join(
+        ", "
+      )}. Months must be between 1 and 12.`,
+    };
+  }
   const selectedMonthNames = monthNumbers
     .map(
       (num) => Object.entries(months.map).find(([, val]) => val === num)?.[0]

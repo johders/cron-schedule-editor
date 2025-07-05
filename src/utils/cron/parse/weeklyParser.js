@@ -53,10 +53,10 @@ function validateAndConvertTime(minStr, hourStr) {
 }
 
 function parseAndValidateWeekdays(dayOfWeekStr) {
-  if (!/^(\d{1})(,\d{1})*$/.test(dayOfWeekStr)) {
+  if (!/^([0-6])(,[0-6])*$/.test(dayOfWeekStr)) {
     return {
       error: "Invalid days",
-      message: "Invalid weekday format.",
+      message: "Invalid weekday format. Allowed values are 0-6.",
     };
   }
 
