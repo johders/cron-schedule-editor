@@ -1,13 +1,7 @@
 import RadioButton from "./ui/RadioButton";
 import styles from "../App.module.css";
 
-function ScheduleOption({
-  label,
-  value,
-  currentValue,
-  onChange,
-  children,
-}) {
+function ScheduleOption({ label, value, currentValue, onChange, children }) {
   return (
     <div className={styles.schedulingOption}>
       <RadioButton

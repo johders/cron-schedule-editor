@@ -11,7 +11,7 @@ import {
   parseWeekly,
   parseDaily,
   parseTimeInterval,
-  parseMonthly
+  parseMonthly,
 } from "./parse";
 
 export function generateCronString({
@@ -56,8 +56,11 @@ export function parseCronExpression(cronText, setStateHandlers) {
     case SCHEDULE_TYPES.MONTHLY:
       return parseMonthly(raw, setStateHandlers);
     case SCHEDULE_TYPES.TIME_INTERVAL:
-       return parseTimeInterval(raw, setStateHandlers);
+      return parseTimeInterval(raw, setStateHandlers);
     default:
-      return { error: "Unsupported", message: "Unsupported CRON syntax or format." };
+      return {
+        error: "Unsupported",
+        message: "Unsupported CRON syntax or format.",
+      };
   }
 }

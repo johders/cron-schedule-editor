@@ -6,7 +6,7 @@ body {
   background-color: var(--color-bg);
 }
 
-h1{
+h1 {
   text-align: center;
   margin: 0;
 }
@@ -17,7 +17,7 @@ h1{
   padding: 2rem;
   background-color: var(--color-white);
   border-radius: var(--radius-xl);
-  box-shadow:var(--shadow-md);
+  box-shadow: var(--shadow-md);
   font-family: var(--font-base);
   display: flex;
   flex-direction: column;

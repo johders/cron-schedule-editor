@@ -1,7 +1,6 @@
 import styles from "./MultiSelect.module.css";
 import appStyles from "../../App.module.css";
 
-
 function MultiSelect({ options, values, onChange, error }) {
   const toggleOption = (option) => {
     const newValues = values.includes(option)

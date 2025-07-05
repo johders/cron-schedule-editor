@@ -1,9 +1,13 @@
 import { months } from "../../../constants/constants";
 
-export function generateMonthlyCron({ selectedMonths, dayOfMonth, dateTimeMonthly }) {
+export function generateMonthlyCron({
+  selectedMonths,
+  dayOfMonth,
+  dateTimeMonthly,
+}) {
   const monthlyErrors = {};
 
-if (!dayOfMonth) {
+  if (!dayOfMonth) {
     monthlyErrors.dayOfMonth = "Please enter a day of the month";
   }
 
@@ -35,11 +39,7 @@ if (!dayOfMonth) {
   const hasFeb = monthNumbers.includes(2);
   const has30DayMonth = monthNumbers.some((m) => [4, 6, 9, 11].includes(m));
 
-  const maxValidDay = hasFeb
-    ? 28
-    : has30DayMonth
-    ? 30
-    : 31;
+  const maxValidDay = hasFeb ? 28 : has30DayMonth ? 30 : 31;
 
   if (day < 1 || day > maxValidDay) {
     return {

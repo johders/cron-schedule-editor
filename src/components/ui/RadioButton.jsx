@@ -1,6 +1,5 @@
 import styles from "./RadioButton.module.css";
 
-
 function RadioButton({ label, name, value, checked, onChange }) {
   return (
     <label className={styles.radio}>

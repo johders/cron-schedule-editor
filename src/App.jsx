@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import styles from "./App.module.css";
-import { SCHEDULE_TYPES, } from "./constants/constants";
+import { SCHEDULE_TYPES } from "./constants/constants";
 import {
   generateCronString,
   parseCronExpression,

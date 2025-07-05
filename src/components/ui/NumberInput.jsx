@@ -1,7 +1,6 @@
 import styles from "./NumberInput.module.css";
 import appStyles from "../../App.module.css";
 
-
 function NumberInput({ value, placeholder, maxInput, onChange, error, id }) {
   return (
     <div className={styles.wrapper}>

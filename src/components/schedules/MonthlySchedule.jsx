@@ -32,13 +32,13 @@ function MonthlySchedule({
         error={errors.selectedMonths}
       />
       <span>At</span>
-        <TimePicker
-          id="monthly-time"
-          value={dateTimeMonthly}
-          onChange={setdateTimeMonthly}
-          error={errors.dateTimeMonthly}
-        />
-      </div>
+      <TimePicker
+        id="monthly-time"
+        value={dateTimeMonthly}
+        onChange={setdateTimeMonthly}
+        error={errors.dateTimeMonthly}
+      />
+    </div>
   );
 }
 

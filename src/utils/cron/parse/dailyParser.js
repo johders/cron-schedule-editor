@@ -1,7 +1,10 @@
 import { SCHEDULE_TYPES } from "../../../constants/constants";
-import { validateCronTime } from "../cronValidators"; 
+import { validateCronTime } from "../cronValidators";
 
-export function parseDaily(cronText, { setDailyTime1, setDailyTime2, setScheduleType }) {
+export function parseDaily(
+  cronText,
+  { setDailyTime1, setDailyTime2, setScheduleType }
+) {
   const partsList = splitCronParts(cronText);
 
   const countError = validateCronEntryCount(partsList);
