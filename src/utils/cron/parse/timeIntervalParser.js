@@ -1,10 +1,22 @@
 import { SCHEDULE_TYPES } from "../../../constants/constants";
 
-export function parseTimeInterval(cronText, setStateHandlers) {
- const { setMinutes, setScheduleType } = setStateHandlers;
+export function parseTimeInterval(cronText, { setMinutes, setScheduleType }) {
+  const extractionResult = extractInterval(cronText);
+  if (extractionResult.error) return extractionResult;
 
+  const { interval } = extractionResult;
+
+  const validationError = validateInterval(interval);
+  if (validationError) return validationError;
+
+  setMinutes(interval.toString());
+  setScheduleType(SCHEDULE_TYPES.TIME_INTERVAL);
+
+  return { success: true };
+}
+
+function extractInterval(cronText) {
   const trimmed = cronText.trim();
-
   const match = trimmed.match(/^\*\/(\d{1,2})\s\*\s\*\s\*\s\*$/);
 
   if (!match) {
@@ -18,7 +30,10 @@ export function parseTimeInterval(cronText, setStateHandlers) {
   }
 
   const interval = parseInt(match[1], 10);
+  return { interval };
+}
 
+function validateInterval(interval) {
   if (isNaN(interval) || interval < 1 || interval > 59) {
     return {
       error: "invalid-interval",
@@ -28,9 +43,5 @@ export function parseTimeInterval(cronText, setStateHandlers) {
       },
     };
   }
-
-  setMinutes(interval.toString());
-  setScheduleType(SCHEDULE_TYPES.TIME_INTERVAL);
-
-  return { success: true };
+  return null;
 }
