@@ -28,6 +28,8 @@ function App() {
 
   const [cronText, setCronText] = useState("");
 
+  const [errors, setErrors] = useState({});
+
   const handleSave = () => {
     const cron = generateCronString({
       scheduleType,
@@ -41,10 +43,15 @@ function App() {
       dateTimeMonthy,
     });
 
-    if (cron) {
-      setCronText(cron);
-      toast.success("Schedule saved!");
+    if (cron?.error) {
+      setErrors({ [cron.error]: cron.message });
+      toast.error(cron.message); 
+      return;
     }
+
+    setErrors({});
+    setCronText(cron);
+    toast.success("Schedule saved!");
   };
 
   const handleLoad = () => {
@@ -112,7 +119,7 @@ function App() {
         />
 
         {scheduleType === SCHEDULE_TYPES.TIME_INTERVAL && (
-          <TimeIntervalSchedule minutes={minutes} setMinutes={setMinutes} />
+          <TimeIntervalSchedule minutes={minutes} setMinutes={setMinutes} error={errors.minutes} />
         )}
       </div>
 
