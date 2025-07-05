@@ -1,5 +1,5 @@
-import { toast } from "react-hot-toast";
 import { weekdays, SCHEDULE_TYPES } from "../../../constants/constants";
+import { validateCronTime } from "../cronValidators";
 
 export function parseWeekly(cronText, setStateHandlers) {
   const { setSelectedWeekdays, setDateTimeWeekly, setScheduleType } =
@@ -7,20 +7,21 @@ export function parseWeekly(cronText, setStateHandlers) {
 
   const parts = cronText.trim().split(" ");
   if (parts.length !== 5) {
-    toast.error("Invalid CRON format for weekly schedule.");
-    return;
+    return {
+      error: "Invalid format",
+      message: "Expected 5 parts in CRON expression.",
+    };
   }
 
-  const [min, hour, , , dayOfWeekStr] = parts;
+  const [minStr, hourStr, , , dayOfWeekStr] = parts;
+  const min = parseInt(minStr, 10);
+  const hour = parseInt(hourStr, 10);
 
-  if (isNaN(min) || isNaN(hour)) {
-    toast.error("Minute or hour is not a valid number.");
-    return;
-  }
+  const timeValidationError = validateCronTime(hour, min, 0);
+  if (timeValidationError) return timeValidationError;
 
   if (!/^(\d{1})(,\d{1})*$/.test(dayOfWeekStr)) {
-    toast.error("Invalid day of week format.");
-    return;
+    return { error: "Invalid days", message: "Invalid weekday format." };
   }
 
   const weekdayNumbers = dayOfWeekStr.split(",").map(Number);
@@ -33,8 +34,7 @@ export function parseWeekly(cronText, setStateHandlers) {
     .filter(Boolean);
 
   if (!selectedWeekdays.length) {
-    toast.error("No valid weekdays found.");
-    return;
+    return { error: "No weekdays", message: "No valid weekdays found." };
   }
 
   const date = new Date();
@@ -46,5 +46,5 @@ export function parseWeekly(cronText, setStateHandlers) {
   setSelectedWeekdays(selectedWeekdays);
   setDateTimeWeekly(date);
   setScheduleType(SCHEDULE_TYPES.WEEKLY);
-  toast.success("Weekly schedule loaded!");
+  return { success: true };
 }

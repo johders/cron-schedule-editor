@@ -1,5 +1,5 @@
-import { toast } from "react-hot-toast";
 import { months, SCHEDULE_TYPES } from "../../../constants/constants";
+import { validateCronTime } from "../cronValidators";
 
 export function parseMonthly(cronText, setStateHandlers) {
   const {
@@ -11,24 +11,31 @@ export function parseMonthly(cronText, setStateHandlers) {
 
   const parts = cronText.trim().split(" ");
   if (parts.length !== 5) {
-    toast.error("Invalid CRON format for monthly schedule.");
-    return;
+    return {
+      error: "format",
+      message: "Invalid CRON format: Expected 5 parts for monthly schedule.",
+    };
   }
 
-  const [min, hour, dayStr, monthStr, dayOfWeek] = parts;
+  const [minStr, hourStr, dayStr, monthStr, dayOfWeek] = parts;
+  const min = parseInt(minStr, 10);
+  const hour = parseInt(hourStr, 10);
+  const day = parseInt(dayStr, 10);
+
+  const timeValidationError = validateCronTime(hour, min, 0);
+  if (timeValidationError) return timeValidationError;
 
   if (
-    isNaN(min) ||
-    isNaN(hour) ||
-    isNaN(dayStr) ||
+    isNaN(day) ||
     !/^(\d{1,2})(,\d{1,2})*$/.test(monthStr) ||
     dayOfWeek !== "*"
   ) {
-    toast.error("Invalid monthly CRON format.");
-    return;
+    return {
+      error: "format",
+      message: "Invalid monthly CRON structure or values.",
+    };
   }
 
-  const day = parseInt(dayStr, 10);
   const monthNumbers = monthStr.split(",").map(Number);
 
   const selectedMonthNames = monthNumbers
@@ -38,8 +45,10 @@ export function parseMonthly(cronText, setStateHandlers) {
     .filter(Boolean);
 
   if (!selectedMonthNames.length) {
-    toast.error("Invalid month values.");
-    return;
+    return {
+      error: "months",
+      message: "No valid month values were found.",
+    };
   }
 
   const hasFeb = monthNumbers.includes(2);
@@ -56,15 +65,20 @@ export function parseMonthly(cronText, setStateHandlers) {
   } else if (has31DayMonth) {
     maxValidDay = 31;
   } else {
-    toast.error("Unknown month configuration.");
-    return;
+    return {
+      error: "months",
+      message: "Unknown month configuration.",
+    };
   }
 
   if (day < 1 || day > maxValidDay) {
-    toast.error(
-      `Day must be between 1 and ${maxValidDay} based on selected months.`
-    );
-    return;
+    return {
+      error: "dayOfMonth",
+      message: `Day must be between 1 and ${maxValidDay} based on selected months.`,
+      details: {
+        dayOfMonth: `Must be between 1 and ${maxValidDay}`,
+      },
+    };
   }
 
   const date = new Date();
@@ -77,5 +91,5 @@ export function parseMonthly(cronText, setStateHandlers) {
   setSelectedMonths(selectedMonthNames);
   setdateTimeMonthy(date);
   setScheduleType(SCHEDULE_TYPES.MONTHLY);
-  toast.success("Monthly schedule loaded!");
+  return { success: true };
 }

@@ -1,26 +1,36 @@
-import { toast } from "react-hot-toast";
 import { SCHEDULE_TYPES } from "../../../constants/constants";
 
 export function parseTimeInterval(cronText, setStateHandlers) {
-  const { setMinutes, setScheduleType } = setStateHandlers;
+ const { setMinutes, setScheduleType } = setStateHandlers;
 
   const trimmed = cronText.trim();
 
   const match = trimmed.match(/^\*\/(\d{1,2})\s\*\s\*\s\*\s\*$/);
 
   if (!match) {
-    toast.error("Invalid format for time interval. Expected '*/X * * * *'.");
-    return;
+    return {
+      error: "format",
+      message: "Invalid format for time interval. Expected '*/X * * * *'.",
+      details: {
+        minutes: "Expected format: '*/X * * * *'",
+      },
+    };
   }
 
   const interval = parseInt(match[1], 10);
 
   if (isNaN(interval) || interval < 1 || interval > 59) {
-    toast.error("Time interval must be a number between 1 and 59.");
-    return;
+    return {
+      error: "invalid-interval",
+      message: "Time interval must be a number between 1 and 59.",
+      details: {
+        minutes: "Interval must be between 1 and 59.",
+      },
+    };
   }
 
   setMinutes(interval.toString());
   setScheduleType(SCHEDULE_TYPES.TIME_INTERVAL);
-  toast.success("Time interval schedule loaded!");
+
+  return { success: true };
 }

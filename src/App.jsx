@@ -62,7 +62,7 @@ function App() {
 
     setErrors({});
 
-    parseCronExpression(cronText, {
+    const result = parseCronExpression(cronText, {
       setDailyTime1,
       setDailyTime2,
       setScheduleType,
@@ -73,6 +73,16 @@ function App() {
       setDayOfMonth,
       setdateTimeMonthy,
     });
+
+    if (result?.error) {
+    toast.error(result.message || "Failed to parse CRON.");
+    if (result.details) {
+      setErrors(result.details);
+    }
+    return;
+  }
+
+  toast.success("Schedule loaded!");
   };
 
   return (

@@ -58,7 +58,6 @@ export function parseCronExpression(cronText, setStateHandlers) {
     case SCHEDULE_TYPES.TIME_INTERVAL:
        return parseTimeInterval(raw, setStateHandlers);
     default:
-      toast.error("Unsupported CRON syntax or format.");
-      return;
+      return { error: "Unsupported", message: "Unsupported CRON syntax or format." };
   }
 }
