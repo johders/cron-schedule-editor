@@ -1,4 +1,6 @@
 import styles from "./MultiSelect.module.css";
+import appStyles from "../../App.module.css";
+
 
 function MultiSelect({ options, values, onChange, error }) {
   const toggleOption = (option) => {
@@ -10,7 +12,7 @@ function MultiSelect({ options, values, onChange, error }) {
 
   return (
     <div className={styles.wrapper}>
-      {error && <picture className={styles.errorMessage}>{error}</picture>}
+      {error && <picture className={appStyles.errorMessage}>{error}</picture>}
       <div className={styles.tileContainer}>
         {options.map((option) => (
           <button

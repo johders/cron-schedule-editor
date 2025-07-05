@@ -62,8 +62,12 @@ legend {
   margin-bottom: 0.5rem;
 }
 
-.error {
+.inputError {
+  border: 1px solid red !important;
+}
+
+.errorMessage {
   color: red;
-  font-size: 0.9rem;
-  margin: 4px 0;
+  font-size: 0.875rem;
+  margin-top: 4px;
 }

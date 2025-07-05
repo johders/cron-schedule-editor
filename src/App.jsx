@@ -59,6 +59,9 @@ function App() {
   };
 
   const handleLoad = () => {
+
+    setErrors({});
+
     parseCronExpression(cronText, {
       setDailyTime1,
       setDailyTime2,

@@ -46,13 +46,3 @@
   color: white !important;
   font-weight: bold !important;
 }
-
-.inputError {
-  border: 1px solid red;
-}
-
-.errorMessage {
-  color: red;
-  font-size: 0.875rem;
-  margin-top: 4px;
-}
