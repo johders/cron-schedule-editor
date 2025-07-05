@@ -90,6 +90,7 @@ function App() {
             setSelectedWeekdays={setSelectedWeekdays}
             dateTimeWeekly={dateTimeWeekly}
             setDateTimeWeekly={setDateTimeWeekly}
+            errors={errors}
           />
         )}
       </div>
@@ -109,6 +110,7 @@ function App() {
             setDailyTime1={setDailyTime1}
             dailyTime2={dailyTime2}
             setDailyTime2={setDailyTime2}
+            errors={errors}
           />
         )}
       </div>

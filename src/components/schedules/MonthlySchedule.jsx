@@ -34,7 +34,6 @@ function MonthlySchedule({
         <TimePicker
           value={dateTimeMonthy}
           onChange={setdateTimeMonthy}
-          hasError={!!errors.dateTimeMonthy}
           error={errors.dateTimeMonthy}
         />
       </div>

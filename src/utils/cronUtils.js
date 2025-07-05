@@ -14,9 +14,20 @@ export function generateCronString({
 }) {
   switch (scheduleType) {
     case SCHEDULE_TYPES.WEEKLY: {
-      if (!selectedWeekdays?.length || !dateTimeWeekly) {
-        toast.error("Please select at least one weekday and time");
-        return null;
+      const weeklyErrors = {};
+      if (!selectedWeekdays?.length) {
+        weeklyErrors.selectedWeekdays = "Please select at least one weekday";
+      }
+      if (!dateTimeWeekly) {
+        weeklyErrors.dateTimeWeekly = "Please select a time";
+      }
+
+      if (Object.keys(weeklyErrors).length) {
+        return {
+          error: "weekly",
+          message: "Please complete all required fields",
+          details: weeklyErrors,
+        };
       }
 
       const days = selectedWeekdays.map((day) => weekdays.map[day]);
@@ -27,10 +38,19 @@ export function generateCronString({
     }
 
     case SCHEDULE_TYPES.DAILY: {
+      const dailyErrors = {};
       if (!dailyTime1 && !dailyTime2) {
-        toast.error("Please set at least one time");
-        return null;
+        dailyErrors.dailyTime1 = "Please set at least one time";
       }
+
+      if (Object.keys(dailyErrors).length) {
+        return {
+          error: "daily",
+          message: "Please complete all required fields",
+          details: dailyErrors,
+        };
+      }
+
       const times = [dailyTime1, dailyTime2].filter(Boolean);
       return times
         .map((time) => `${time.getMinutes()} ${time.getHours()} * * *`)

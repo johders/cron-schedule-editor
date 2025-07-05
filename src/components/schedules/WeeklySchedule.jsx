@@ -8,6 +8,7 @@ function WeeklySchedule({
   setSelectedWeekdays,
   dateTimeWeekly,
   setDateTimeWeekly,
+  errors = {},
 }) {
   return (
     <div className={styles.verticalStack}>
@@ -16,8 +17,13 @@ function WeeklySchedule({
         values={selectedWeekdays}
         placeholder="Select weekdays"
         onChange={setSelectedWeekdays}
+        error={errors.selectedWeekdays}
       />
-      <TimePicker value={dateTimeWeekly} onChange={setDateTimeWeekly} />
+      <TimePicker
+        value={dateTimeWeekly}
+        onChange={setDateTimeWeekly}
+        error={errors.dateTimeWeekly}
+      />
     </div>
   );
 }

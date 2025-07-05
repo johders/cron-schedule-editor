@@ -2,7 +2,9 @@ import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import styles from "./TimePicker.module.css";
 
-function TimePicker({ value, onChange, hasError = false, error = ""}) {
+function TimePicker({ value, onChange, error = ""}) {
+  const hasError = !!error;
+  
   return (
     <div className={styles.wrapper}>
       {hasError && <div className={styles.errorMessage}>{error}</div>}
