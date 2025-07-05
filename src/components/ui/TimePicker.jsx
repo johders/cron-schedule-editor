@@ -2,8 +2,10 @@ import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import styles from "./TimePicker.module.css";
 
-function TimePicker({ value, onChange }) {
+function TimePicker({ value, onChange, hasError = false, error = ""}) {
   return (
+    <div className={styles.wrapper}>
+      {hasError && <div className={styles.errorMessage}>{error}</div>}
     <ReactDatePicker
       selected={value}
       onChange={onChange}
@@ -13,9 +15,10 @@ function TimePicker({ value, onChange }) {
       timeCaption="Time"
       dateFormat="h:mm aa"
       placeholderText="Select time"
-      className={styles.customTimePicker}
+      className={`${styles.customTimePicker} ${hasError ? styles.inputError : ""}`}
       popperPlacement="bottom"
     />
+    </div>
   );
 }
 

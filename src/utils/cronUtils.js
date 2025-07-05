@@ -40,15 +40,32 @@ export function generateCronString({
     case SCHEDULE_TYPES.TIME_INTERVAL: {
       const minuteInterval = parseInt(minutes, 10);
       if (isNaN(minuteInterval) || minuteInterval < 1 || minuteInterval > 59) {
-        return { error: "minutes", message: "Please enter a number between 1 and 59 for minutes" };
+        return {
+          error: "minutes",
+          message: "Please enter a number between 1 and 59 for minutes",
+        };
       }
       return `*/${minuteInterval} * * * *`;
     }
 
     case SCHEDULE_TYPES.MONTHLY: {
-      if (!dayOfMonth || !selectedMonths.length || !dateTimeMonthy) {
-        toast.error("Please complete all fields");
-        return null;
+      const monthlyErrors = {};
+      if (!dayOfMonth) {
+        monthlyErrors.dayOfMonth = "Please enter a day of the month";
+      }
+      if (!selectedMonths.length) {
+        monthlyErrors.selectedMonths = "Please select at least one month";
+      }
+      if (!dateTimeMonthy) {
+        monthlyErrors.dateTimeMonthy = "Please select a time";
+      }
+
+      if (Object.keys(monthlyErrors).length) {
+        return {
+          error: "monthly",
+          message: "Please complete all required fields",
+          details: monthlyErrors,
+        };
       }
 
       const monthNumbers = selectedMonths
@@ -73,10 +90,8 @@ export function generateCronString({
           const monthName = Object.entries(months.map).find(
             ([, val]) => val === month
           )?.[0];
-          toast.error(
-            `${monthName} only has ${daysInMonth} days. Please enter a valid day`
-          );
-          return null;
+          monthlyErrors.dayOfMonth = `${monthName} only has ${daysInMonth} days. Please enter a valid day`;
+          break;
         }
       }
 

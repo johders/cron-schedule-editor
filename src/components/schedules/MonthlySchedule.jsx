@@ -11,6 +11,7 @@ function MonthlySchedule({
   setSelectedMonths,
   dateTimeMonthy,
   setdateTimeMonthy,
+  errors = {},
 }) {
   return (
     <div className={styles.verticalStack}>
@@ -20,16 +21,23 @@ function MonthlySchedule({
         maxInput="31"
         placeholder="N-th day of the month"
         onChange={setDayOfMonth}
+        error={errors.dayOfMonth}
       />
       <span>Of</span>
       <MultiSelect
         options={months.list}
         values={selectedMonths}
         onChange={setSelectedMonths}
+        error={errors.selectedMonths}
       />
       <span>At</span>
-      <TimePicker value={dateTimeMonthy} onChange={setdateTimeMonthy} />
-    </div>
+        <TimePicker
+          value={dateTimeMonthy}
+          onChange={setdateTimeMonthy}
+          hasError={!!errors.dateTimeMonthy}
+          error={errors.dateTimeMonthy}
+        />
+      </div>
   );
 }
 

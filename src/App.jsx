@@ -44,8 +44,12 @@ function App() {
     });
 
     if (cron?.error) {
-      setErrors({ [cron.error]: cron.message });
-      toast.error(cron.message); 
+      if (cron.details) {
+        setErrors(cron.details);
+      } else {
+        setErrors({ [cron.error]: cron.message });
+      }
+      toast.error(cron.message);
       return;
     }
 
@@ -119,7 +123,11 @@ function App() {
         />
 
         {scheduleType === SCHEDULE_TYPES.TIME_INTERVAL && (
-          <TimeIntervalSchedule minutes={minutes} setMinutes={setMinutes} error={errors.minutes} />
+          <TimeIntervalSchedule
+            minutes={minutes}
+            setMinutes={setMinutes}
+            error={errors.minutes}
+          />
         )}
       </div>
 
@@ -140,6 +148,7 @@ function App() {
             setSelectedMonths={setSelectedMonths}
             dateTimeMonthy={dateTimeMonthy}
             setdateTimeMonthy={setdateTimeMonthy}
+            errors={errors}
           />
         )}
       </div>
