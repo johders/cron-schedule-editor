@@ -62,6 +62,14 @@ function parseAndValidateWeekdays(dayOfWeekStr) {
 
   const weekdayNumbers = dayOfWeekStr.split(",").map(Number);
 
+  const uniqueWeekdays = new Set(weekdayNumbers);
+  if (uniqueWeekdays.size !== weekdayNumbers.length) {
+    return {
+      error: "Duplicate days",
+      message: "Duplicate weekdays are not allowed.",
+    };
+  }
+
   const selectedWeekdays = weekdayNumbers
     .map(
       (num) =>

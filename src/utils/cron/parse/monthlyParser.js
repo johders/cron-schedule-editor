@@ -84,6 +84,15 @@ function mapMonths(monthStr) {
       )}. Months must be between 1 and 12.`,
     };
   }
+
+  const uniqueMonths = new Set(monthNumbers);
+  if (uniqueMonths.size !== monthNumbers.length) {
+    return {
+      error: "months",
+      message: "Duplicate months are not allowed.",
+    };
+  }
+
   const selectedMonthNames = monthNumbers
     .map(
       (num) => Object.entries(months.map).find(([, val]) => val === num)?.[0]
