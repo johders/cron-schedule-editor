@@ -169,7 +169,7 @@ function App() {
       </div>
 
       <div className={styles.fullWidth}>
-        <TextArea value={cronText} onChange={setCronText} />
+        <TextArea value={cronText} onChange={setCronText} id="cron-text"/>
         <div className={styles.buttonGroup}>
           <Button children="Save" onClick={handleSave}>
             Save

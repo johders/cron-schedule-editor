@@ -3,13 +3,14 @@ import "react-datepicker/dist/react-datepicker.css";
 import styles from "./TimePicker.module.css";
 import appStyles from "../../App.module.css";
 
-function TimePicker({ value, onChange, error = ""}) {
+function TimePicker({ value, onChange, error = "", id}) {
   const hasError = !!error;
 
   return (
     <div className={styles.wrapper}>
       {hasError && <div className={appStyles.errorMessage}>{error}</div>}
     <ReactDatePicker
+      id={id}
       selected={value}
       onChange={onChange}
       showTimeSelect

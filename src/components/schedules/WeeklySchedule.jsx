@@ -20,6 +20,7 @@ function WeeklySchedule({
         error={errors.selectedWeekdays}
       />
       <TimePicker
+        id="weekly-time"
         value={dateTimeWeekly}
         onChange={setDateTimeWeekly}
         error={errors.dateTimeWeekly}

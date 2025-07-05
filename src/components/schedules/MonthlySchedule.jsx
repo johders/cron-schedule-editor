@@ -17,6 +17,7 @@ function MonthlySchedule({
     <div className={styles.verticalStack}>
       <span>Every</span>
       <NumberInput
+        id="monthly-day"
         value={dayOfMonth}
         maxInput="31"
         placeholder="N-th day of the month"
@@ -32,6 +33,7 @@ function MonthlySchedule({
       />
       <span>At</span>
         <TimePicker
+          id="monthly-time"
           value={dateTimeMonthy}
           onChange={setdateTimeMonthy}
           error={errors.dateTimeMonthy}
