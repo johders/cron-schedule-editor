@@ -5,7 +5,7 @@ export function parseMonthly(cronText, setStateHandlers) {
   const {
     setDayOfMonth,
     setSelectedMonths,
-    setdateTimeMonthy,
+    setdateTimeMonthly,
     setScheduleType,
   } = setStateHandlers;
 
@@ -89,7 +89,7 @@ export function parseMonthly(cronText, setStateHandlers) {
 
   setDayOfMonth(day.toString());
   setSelectedMonths(selectedMonthNames);
-  setdateTimeMonthy(date);
+  setdateTimeMonthly(date);
   setScheduleType(SCHEDULE_TYPES.MONTHLY);
   return { success: true };
 }

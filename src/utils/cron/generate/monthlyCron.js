@@ -1,6 +1,6 @@
 import { months } from "../../../constants/constants";
 
-export function generateMonthlyCron({ selectedMonths, dayOfMonth, dateTimeMonthy }) {
+export function generateMonthlyCron({ selectedMonths, dayOfMonth, dateTimeMonthly }) {
   const monthlyErrors = {};
 
 if (!dayOfMonth) {
@@ -11,8 +11,8 @@ if (!dayOfMonth) {
     monthlyErrors.selectedMonths = "Please select at least one month";
   }
 
-  if (!dateTimeMonthy) {
-    monthlyErrors.dateTimeMonthy = "Please select a time";
+  if (!dateTimeMonthly) {
+    monthlyErrors.dateTimeMonthly = "Please select a time";
   }
 
   const day = parseInt(dayOfMonth, 10);
@@ -51,8 +51,8 @@ if (!dayOfMonth) {
     };
   }
 
-  const hour = dateTimeMonthy.getHours();
-  const minute = dateTimeMonthy.getMinutes();
+  const hour = dateTimeMonthly.getHours();
+  const minute = dateTimeMonthly.getMinutes();
 
   return `${minute} ${hour} ${day} ${monthNumbers.join(",")} *`;
 }

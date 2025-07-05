@@ -57,5 +57,3 @@ export const SCHEDULE_TYPES = {
   MONTHLY: "Monthly",
   CUSTOM: "Custom",
 };
-
-export const schedulingOption = "scheduling-option";

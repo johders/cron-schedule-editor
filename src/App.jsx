@@ -1,10 +1,7 @@
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import styles from "./App.module.css";
-import RadioButton from "./components/ui/RadioButton";
-import TextArea from "./components/ui/TextArea";
-import Button from "./components/ui/Button";
-import { SCHEDULE_TYPES, schedulingOption } from "./constants/constants";
+import { SCHEDULE_TYPES, } from "./constants/constants";
 import {
   generateCronString,
   parseCronExpression,
@@ -13,6 +10,8 @@ import WeeklySchedule from "./components/schedules/WeeklySchedule";
 import DailySchedule from "./components/schedules/DailySchedule";
 import TimeIntervalSchedule from "./components/schedules/TimeIntervalSchedule";
 import MonthlySchedule from "./components/schedules/MonthlySchedule";
+import ScheduleFooter from "./components/ScheduleFooter";
+import ScheduleOption from "./components/ScheduleOption";
 
 function App() {
   const [scheduleType, setScheduleType] = useState(SCHEDULE_TYPES.WEEKLY);
@@ -27,7 +26,7 @@ function App() {
 
   const [selectedMonths, setSelectedMonths] = useState([]);
   const [dayOfMonth, setDayOfMonth] = useState("");
-  const [dateTimeMonthy, setdateTimeMonthy] = useState(null);
+  const [dateTimeMonthly, setdateTimeMonthly] = useState(null);
 
   const [cronText, setCronText] = useState("");
 
@@ -45,7 +44,7 @@ function App() {
       minutes,
       selectedMonths,
       dayOfMonth,
-      dateTimeMonthy,
+      dateTimeMonthly: dateTimeMonthly,
     });
 
     if (cron?.error) {
@@ -78,7 +77,7 @@ function App() {
       setDateTimeWeekly,
       setSelectedMonths,
       setDayOfMonth,
-      setdateTimeMonthy,
+      setdateTimeMonthly: setdateTimeMonthly,
     });
 
     if (result?.error) {
@@ -96,98 +95,73 @@ function App() {
   return (
     <div className={styles.container}>
       <h1>CRON Schedule editor</h1>
-      <div className={styles.schedulingOption}>
-        <RadioButton
-          label={SCHEDULE_TYPES.WEEKLY}
-          name={schedulingOption}
-          value={SCHEDULE_TYPES.WEEKLY}
-          checked={scheduleType === SCHEDULE_TYPES.WEEKLY}
-          onChange={setScheduleType}
+      <ScheduleOption
+        label={SCHEDULE_TYPES.WEEKLY}
+        value={SCHEDULE_TYPES.WEEKLY}
+        currentValue={scheduleType}
+        onChange={setScheduleType}
+      >
+        <WeeklySchedule
+          selectedWeekdays={selectedWeekdays}
+          setSelectedWeekdays={setSelectedWeekdays}
+          dateTimeWeekly={dateTimeWeekly}
+          setDateTimeWeekly={setDateTimeWeekly}
+          errors={visibleErrors}
         />
+      </ScheduleOption>
 
-        {scheduleType === SCHEDULE_TYPES.WEEKLY && (
-          <WeeklySchedule
-            selectedWeekdays={selectedWeekdays}
-            setSelectedWeekdays={setSelectedWeekdays}
-            dateTimeWeekly={dateTimeWeekly}
-            setDateTimeWeekly={setDateTimeWeekly}
-            errors={visibleErrors}
-          />
-        )}
-      </div>
-
-      <div className={styles.schedulingOption}>
-        <RadioButton
-          label={SCHEDULE_TYPES.DAILY}
-          name={schedulingOption}
-          value={SCHEDULE_TYPES.DAILY}
-          checked={scheduleType === SCHEDULE_TYPES.DAILY}
-          onChange={setScheduleType}
+      <ScheduleOption
+        label={SCHEDULE_TYPES.DAILY}
+        value={SCHEDULE_TYPES.DAILY}
+        currentValue={scheduleType}
+        onChange={setScheduleType}
+      >
+        <DailySchedule
+          dailyTime1={dailyTime1}
+          setDailyTime1={setDailyTime1}
+          dailyTime2={dailyTime2}
+          setDailyTime2={setDailyTime2}
+          errors={visibleErrors}
         />
+      </ScheduleOption>
 
-        {scheduleType === SCHEDULE_TYPES.DAILY && (
-          <DailySchedule
-            dailyTime1={dailyTime1}
-            setDailyTime1={setDailyTime1}
-            dailyTime2={dailyTime2}
-            setDailyTime2={setDailyTime2}
-            errors={visibleErrors}
-          />
-        )}
-      </div>
-
-      <div className={styles.schedulingOption}>
-        <RadioButton
-          label={SCHEDULE_TYPES.TIME_INTERVAL}
-          name={schedulingOption}
-          value={SCHEDULE_TYPES.TIME_INTERVAL}
-          checked={scheduleType === SCHEDULE_TYPES.TIME_INTERVAL}
-          onChange={setScheduleType}
+      <ScheduleOption
+        label={SCHEDULE_TYPES.TIME_INTERVAL}
+        value={SCHEDULE_TYPES.TIME_INTERVAL}
+        currentValue={scheduleType}
+        onChange={setScheduleType}
+      >
+        <TimeIntervalSchedule
+          minutes={minutes}
+          setMinutes={setMinutes}
+          errors={visibleErrors}
         />
+      </ScheduleOption>
 
-        {scheduleType === SCHEDULE_TYPES.TIME_INTERVAL && (
-          <TimeIntervalSchedule
-            minutes={minutes}
-            setMinutes={setMinutes}
-            errors={visibleErrors}
-          />
-        )}
-      </div>
-
-      <div className={styles.schedulingOption}>
-        <RadioButton
-          label={SCHEDULE_TYPES.MONTHLY}
-          name={schedulingOption}
-          value={SCHEDULE_TYPES.MONTHLY}
-          checked={scheduleType === SCHEDULE_TYPES.MONTHLY}
-          onChange={setScheduleType}
+      <ScheduleOption
+        label={SCHEDULE_TYPES.MONTHLY}
+        value={SCHEDULE_TYPES.MONTHLY}
+        currentValue={scheduleType}
+        onChange={setScheduleType}
+      >
+        <MonthlySchedule
+          dayOfMonth={dayOfMonth}
+          setDayOfMonth={setDayOfMonth}
+          selectedMonths={selectedMonths}
+          setSelectedMonths={setSelectedMonths}
+          dateTimeMonthly={dateTimeMonthly}
+          setdateTimeMonthly={setdateTimeMonthly}
+          errors={visibleErrors}
         />
+      </ScheduleOption>
 
-        {scheduleType === SCHEDULE_TYPES.MONTHLY && (
-          <MonthlySchedule
-            dayOfMonth={dayOfMonth}
-            setDayOfMonth={setDayOfMonth}
-            selectedMonths={selectedMonths}
-            setSelectedMonths={setSelectedMonths}
-            dateTimeMonthy={dateTimeMonthy}
-            setdateTimeMonthy={setdateTimeMonthy}
-            errors={visibleErrors}
-          />
-        )}
-      </div>
-
-      <div className={styles.fullWidth}>
-        <TextArea
-          value={cronText}
-          onChange={setCronText}
-          id="cron-text"
-          error={errors.fields.cronText}
-        />
-        <div className={styles.buttonGroup}>
-          <Button children="Save" onClick={handleSave} />
-          <Button children="Load" onClick={handleLoad} />
-        </div>
-      </div>
+      <ScheduleFooter
+        cronText={cronText}
+        setCronText={setCronText}
+        error={errors.fields.cronText}
+        onSave={handleSave}
+        onLoad={handleLoad}
+      />
     </div>
   );
 }

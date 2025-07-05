@@ -23,7 +23,7 @@ export function generateCronString({
   minutes,
   selectedMonths,
   dayOfMonth,
-  dateTimeMonthy,
+  dateTimeMonthly,
 }) {
   switch (scheduleType) {
     case SCHEDULE_TYPES.WEEKLY:
@@ -36,7 +36,7 @@ export function generateCronString({
       return generateMonthlyCron({
         selectedMonths,
         dayOfMonth,
-        dateTimeMonthy,
+        dateTimeMonthly,
       });
     default:
       toast.error("Unsupported schedule type");

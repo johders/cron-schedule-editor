@@ -9,8 +9,8 @@ function MonthlySchedule({
   setDayOfMonth,
   selectedMonths,
   setSelectedMonths,
-  dateTimeMonthy,
-  setdateTimeMonthy,
+  dateTimeMonthly,
+  setdateTimeMonthly,
   errors = {},
 }) {
   return (
@@ -34,9 +34,9 @@ function MonthlySchedule({
       <span>At</span>
         <TimePicker
           id="monthly-time"
-          value={dateTimeMonthy}
-          onChange={setdateTimeMonthy}
-          error={errors.dateTimeMonthy}
+          value={dateTimeMonthly}
+          onChange={setdateTimeMonthly}
+          error={errors.dateTimeMonthly}
         />
       </div>
   );
