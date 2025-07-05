@@ -11,20 +11,20 @@
 
 .tile {
   padding: 0.5rem 1rem;
-  border: 2px solid #ccc;
-  border-radius: 8px;
-  background-color: white;
-  color: #333;
+  border: 2px solid var(--color-border);;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-white);;
+  color: var(--color-text-dark);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .tile:hover {
-  background-color: #bdc4d3;
+  background-color: var(--color-tile-hover);;
 }
 
 .selected {
-  background-color: #688bd6;
-  color: white;
-  border-color: #688bd6;
+  background-color: var(--color-accent);;
+  color: var(--color-white);;
+  border-color: var(--color-accent);;
 }

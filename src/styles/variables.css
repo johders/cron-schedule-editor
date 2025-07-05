@@ -1,0 +1,32 @@
+:root {
+  --color-primary: #4870c7;
+  --color-primary-hover: #405085;
+  --color-accent: #688bd6;
+  --color-disabled: #cbd5e1;
+  --color-border: #ccc;
+  --color-text: #1f2937;
+  --color-text-dark: #333;
+  --color-bg: #f9fafb;
+  --color-light-bg: #fafafa;
+  --color-white: #ffffff;
+  --color-error: #d32f2f;
+  --color-tile-hover: #bdc4d3;
+  --color-placeholder: #6b7280;
+  --color-datepicker-hover: #eef2ff;
+
+  --font-base: "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  --font-alt: "Inter", sans-serif;
+  --font-size-base: 16px;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.1rem;
+  --line-height-base: 1.6;
+
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+
+  --shadow-md: 0 8px 20px rgba(0, 0, 0, 0.1);
+  --shadow-sm: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}

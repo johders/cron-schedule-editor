@@ -4,6 +4,7 @@ import { Toaster } from "react-hot-toast";
 import "./index.css";
 import toastOptions from "./utils/toastOptions.js";
 import App from "./App.jsx";
+import "./styles/variables.css";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
