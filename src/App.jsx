@@ -61,13 +61,13 @@ function App() {
       return;
     }
 
-    setErrors({});
+    setErrors({ fields: {}, suppressUI: false });
     setCronText(cron);
     toast.success("Schedule saved!");
   };
 
   const handleLoad = () => {
-    setErrors({});
+    setErrors({ fields: {}, suppressUI: false });
 
     const result = parseCronExpression(cronText, {
       setDailyTime1,
@@ -87,7 +87,6 @@ function App() {
         fields: { cronText: result.message, ...result.details },
         suppressUI: true,
       });
-      console.log(errors);
       return;
     }
 

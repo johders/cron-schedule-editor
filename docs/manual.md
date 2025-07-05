@@ -8,6 +8,14 @@ The base format is similar to a standard cron expression, which follows this str
 
 ---
 
+## Table of Contents
+- [Weekly Schedule](#weekly-schedule)
+- [Daily Schedule](#daily-schedule)
+- [Time Interval Schedule](#time-interval-schedule)
+- [Monthly Schedule](#monthly-schedule)
+
+---
+
 ## Weekly Schedule
 
 Set a schedule that repeats on specific days of the week.
