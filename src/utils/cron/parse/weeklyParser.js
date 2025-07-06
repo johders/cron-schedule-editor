@@ -44,10 +44,7 @@ function validateAndConvertTime(minStr, hourStr) {
   if (timeValidationError) return timeValidationError;
 
   const date = new Date();
-  date.setHours(hour);
-  date.setMinutes(min);
-  date.setSeconds(0);
-  date.setMilliseconds(0);
+  date.setHours(hour, min, 0, 0);
 
   return { date };
 }
