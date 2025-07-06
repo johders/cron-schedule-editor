@@ -46,12 +46,6 @@ h1 {
   gap: 1rem;
 }
 
-.buttonGroup {
-  display: flex;
-  gap: 1rem;
-  justify-content: flex-end;
-}
-
 fieldset {
   border: none;
   padding: 0;

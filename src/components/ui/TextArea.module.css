@@ -12,3 +12,9 @@
   resize: vertical;
   font-family: var(--font-base);
 }
+
+.readOnly {
+  background-color: var(--color-light-bg);
+  color: var(--color-text-grey);
+  cursor: not-allowed;
+}

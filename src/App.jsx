@@ -29,6 +29,7 @@ function App() {
   const [dateTimeMonthly, setdateTimeMonthly] = useState(null);
 
   const [cronText, setCronText] = useState("");
+  const [manualCronText, setManualCronText] = useState("");
 
   const [errors, setErrors] = useState({ fields: {}, suppressUI: false });
 
@@ -68,7 +69,7 @@ function App() {
   const handleLoad = () => {
     setErrors({ fields: {}, suppressUI: false });
 
-    const result = parseCronExpression(cronText, {
+    const result = parseCronExpression(manualCronText, {
       setDailyTime1,
       setDailyTime2,
       setScheduleType,
@@ -77,7 +78,7 @@ function App() {
       setDateTimeWeekly,
       setSelectedMonths,
       setDayOfMonth,
-      setdateTimeMonthly: setdateTimeMonthly,
+      setdateTimeMonthly,
     });
 
     if (result?.error) {
@@ -157,7 +158,8 @@ function App() {
 
       <ScheduleFooter
         cronText={cronText}
-        setCronText={setCronText}
+        manualCronText={manualCronText}
+        setManualCronText={setManualCronText}
         error={errors.fields.cronText}
         onSave={handleSave}
         onLoad={handleLoad}

@@ -1,7 +1,7 @@
 import styles from "./TextArea.module.css";
 import appStyles from "../../App.module.css";
 
-function TextArea({ value, onChange, id, error }) {
+function TextArea({ value, onChange, id, error, readOnly = false }) {
   return (
     <div className={styles.wrapper}>
       {error && (
@@ -12,15 +12,16 @@ function TextArea({ value, onChange, id, error }) {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Click here for syntax info
+            Help
           </a>
         </div>
       )}
       <textarea
         id={id}
-        className={styles.textarea}
+        className={`${styles.textarea} ${readOnly ? styles.readOnly : ""}`}
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => !readOnly && onChange(e.target.value)}
+        readOnly={readOnly}
       />
     </div>
   );
