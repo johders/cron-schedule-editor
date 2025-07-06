@@ -1,6 +1,7 @@
 import TextArea from "./ui/TextArea";
 import Button from "./ui/Button";
 import styles from "./ScheduleFooter.module.css";
+import { InfoIcon } from "../assets/icons";
 
 function ScheduleFormFooter({
   cronText,
@@ -26,7 +27,19 @@ function ScheduleFormFooter({
       </div>
 
       <div className={styles.section}>
-        <label htmlFor="manual-cron">Enter manual CRON expression</label>
+        <div className={styles.labelWithIcon}>
+          <label htmlFor="manual-cron">Enter manual CRON expression</label>
+          <a
+            href="https://github.com/johders/cron-schedule-editor/blob/main/docs/manual.md"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.infoButton}
+            aria-label="info"
+            title="CRON syntax help"
+          >
+            {InfoIcon}
+          </a>
+        </div>
         <TextArea
           value={manualCronText}
           onChange={setManualCronText}

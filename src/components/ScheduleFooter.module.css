@@ -16,3 +16,24 @@ label {
   font-weight: 700;
   font-size: var(--font-size-md);
 }
+
+.labelWithIcon {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.infoButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  transition: color 0.2s ease;
+}
+
+.infoButton:hover {
+  color: var(--color-primary-hover);
+}
