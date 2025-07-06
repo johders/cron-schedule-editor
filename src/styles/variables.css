@@ -14,6 +14,10 @@
   --color-tile-hover: #bdc4d3;
   --color-placeholder: #6b7280;
   --color-datepicker-hover: #eef2ff;
+  --color-save: #4caf7d;
+  --color-save-hover: #438f6e;
+  --color-load: #4a90e2;
+  --color-load-hover: #3b78c5;
 
   --font-base: "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
   --font-alt: "Inter", sans-serif;

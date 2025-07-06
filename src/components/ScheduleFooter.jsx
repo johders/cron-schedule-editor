@@ -21,7 +21,7 @@ function ScheduleFormFooter({
           readOnly={true}
         />
         <div>
-          <Button children="Save" onClick={onSave} />
+          <Button children="Save" onClick={onSave} color="save" />
         </div>
       </div>
 
@@ -34,7 +34,7 @@ function ScheduleFormFooter({
           error={error}
         />
         <div>
-          <Button children="Load" onClick={onLoad} />
+          <Button children="Load" onClick={onLoad} color="load" />
         </div>
       </div>
     </div>

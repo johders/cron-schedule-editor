@@ -10,8 +10,30 @@
   transition: background-color 0.2s ease;
 }
 
-.button:hover {
+.default {
+  background-color: var(--color-primary);
+}
+.default:hover {
   background-color: var(--color-primary-hover);
+}
+
+.save {
+  background-color: var(--color-save);
+}
+.save:hover {
+  background-color: var(--color-save-hover);
+}
+
+.load {
+  background-color: var(--color-load);
+}
+.load:hover {
+  background-color: var(--color-load-hover);
+}
+
+.button:focus {
+  outline: 2px solid var(--color-border);
+  outline-offset: 2px;
 }
 
 .button:disabled {
